@@ -1,0 +1,5 @@
+{
+  "name": "The Auld Dub Inventory",
+  "description": "A mobile-first inventory management application for The Auld Dub Irish Pub. Features offline capability, fast stock counting, and AI-assisted product management.",
+  "requestFramePermissions": []
+}
