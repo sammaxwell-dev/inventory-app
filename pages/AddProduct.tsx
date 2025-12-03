@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { useApp } from '../context/AppContext';
 import { Category, Product } from '../types';
-import { suggestProductDetails } from '../services/geminiService';
-import { Sparkles, Save, Loader2, ChevronDown } from 'lucide-react';
+import { Save, ChevronDown } from 'lucide-react';
 
 const AddProduct: React.FC = () => {
   const navigate = useNavigate();
@@ -13,23 +12,6 @@ const AddProduct: React.FC = () => {
   const [name, setName] = useState('');
   const [category, setCategory] = useState<Category>(Category.IRISH_BEER);
   const [description, setDescription] = useState('');
-  const [loadingAI, setLoadingAI] = useState(false);
-
-  const handleAIAutoFill = async () => {
-    if (!name.trim()) return;
-    setLoadingAI(true);
-    try {
-        const result = await suggestProductDetails(name);
-        if (result) {
-            setCategory(result.category);
-            setDescription(result.description);
-        } else {
-            alert('AI could not identify this product. Please fill manually.');
-        }
-    } finally {
-        setLoadingAI(false);
-    }
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,8 +26,6 @@ const AddProduct: React.FC = () => {
     navigate('/inventory');
   };
 
-  const isGeminiEnabled = !!process.env.API_KEY;
-
   return (
     <Layout title="Add Product" showBack>
       <div className="pt-2">
@@ -55,27 +35,14 @@ const AddProduct: React.FC = () => {
                 {/* Name Input */}
                 <div className="space-y-2">
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Product Name</label>
-                    <div className="flex gap-3">
-                        <input
-                            required
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder="e.g. Jameson Black Barrel"
-                            className="flex-1 bg-gray-50 border-none text-gray-900 px-5 py-4 rounded-2xl focus:outline-none focus:ring-2 focus:ring-violet-100 transition-all placeholder-gray-400 font-medium"
-                        />
-                        {isGeminiEnabled && (
-                            <button
-                                type="button"
-                                onClick={handleAIAutoFill}
-                                disabled={loadingAI || !name}
-                                className="bg-violet-100 hover:bg-violet-200 disabled:opacity-50 text-violet-600 p-4 rounded-2xl flex items-center justify-center transition-colors"
-                                title="Ask AI to fill details"
-                            >
-                                {loadingAI ? <Loader2 className="animate-spin" /> : <Sparkles />}
-                            </button>
-                        )}
-                    </div>
+                    <input
+                        required
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="e.g. Jameson Black Barrel"
+                        className="w-full bg-gray-50 border-none text-gray-900 px-5 py-4 rounded-2xl focus:outline-none focus:ring-2 focus:ring-violet-100 transition-all placeholder-gray-400 font-medium"
+                    />
                 </div>
 
                 {/* Category Select */}
